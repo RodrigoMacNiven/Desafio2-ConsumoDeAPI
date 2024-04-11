@@ -72,6 +72,7 @@ function validarCEP(cep) {
 async function buscarCEP(cep) {
     try {
         const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        verificarStatusHTTP(response);
         if (!response.ok) {
             throw new Error('Erro ao buscar CEP');
         }
@@ -91,17 +92,12 @@ function alterarInformacoesEndereco(cepInfo) {
     estadoSpan.textContent = `${cepInfo.localidade}/${cepInfo.uf}`;
 }
 
-// function alterarInformacoesTemperatura(temperatura) {
-//     const temperaturaSpan = document.getElementById('tempLocal');
-
-//     logradouroSpan.textContent = cepInfo.logradouro;
-// }
-
 async function buscarTemperatura(latitude, longitude) {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m`;
 
     try {
         const response = await fetch(url);
+        verificarStatusHTTP(response);
         if (!response.ok) {
             throw new Error('Erro ao buscar temperatura');
         }
@@ -111,4 +107,12 @@ async function buscarTemperatura(latitude, longitude) {
     } catch (error) {
         alert("Erro ao buscar temperatura:", error);
     }
+}
+
+function verificarStatusHTTP(response) {
+    if (!response.ok) {
+        throw new Error(`Erro na requisição: Status ${response.status}`);
+    }else{
+            console.log('Código HTTP 200 ok')
+        }
 }
